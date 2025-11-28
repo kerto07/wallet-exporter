@@ -23,7 +23,7 @@ from metrics_enum import MetricsAccountInfo, NetworkType, TokenType
 from prometheus_client import Counter, Gauge, start_http_server
 from solana_wallet import get_solana_balance
 from substrate import get_substrate_account_balance
-from sui import get_sui_balance_simple
+from sui import get_sui_coin_balance_by_symbol
 from utils import configure_logging, read_config_file
 
 
@@ -148,15 +148,20 @@ class AppMetrics:
                 network_name, wallet, balance, symbol, TokenType.NATIVE.value
             )
         elif network_type == NetworkType.SUI.value:
-            balance = get_sui_balance_simple(
+            # Get wallet symbol if specified, otherwise None (SUI only)
+            target_symbol = wallet.get("symbol", None)
+            balances_data = get_sui_coin_balance_by_symbol(
                 rpc_url=network["rpc"],
                 address=wallet["address"],
+                symbol=target_symbol,
                 rpc_call_status_counter=self.rpc_call_status_counter,
             )
-            symbol = "SUI"
-            self._set_balance_metric(
-                network_name, wallet, balance, symbol, TokenType.NATIVE.value
-            )
+            for balance_data in balances_data:
+                balance = balance_data["balance"]
+                symbol = balance_data["symbol"]
+                self._set_balance_metric(
+                    network_name, wallet, balance, symbol, TokenType.NATIVE.value
+                )
 
     def fetch_delegations(self, network, wallet, chain_registry):
         network_name = network["name"]

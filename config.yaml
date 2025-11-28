@@ -56,3 +56,6 @@ networks:
     wallets:
       - name: my-sui-wallet
         address: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      - name: my-sui-wallet-ika
+        address: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+        symbol: IKA
