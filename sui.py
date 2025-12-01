@@ -149,11 +149,7 @@ def get_sui_coin_balance_by_symbols(
 
             # Always include SUI (gas token)
             if coin_type == "0x2::sui::SUI":
-                # Fetch metadata to get decimals for SUI
-                metadata = get_coin_metadata(
-                    rpc_url, coin_type, rpc_call_status_counter
-                )
-                decimals = metadata.get("decimals", 9)  # Default to 9 for SUI
+                decimals = 9  # Default to 9 for SUI
 
                 balance_sui = total_balance / (10**decimals)
                 balances.append({"balance": balance_sui, "symbol": "SUI"})
